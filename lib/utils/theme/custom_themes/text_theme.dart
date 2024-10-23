@@ -5,12 +5,12 @@ class TTextTheme {
 
   static TextTheme lightTextTheme = TextTheme(
     headlineLarge: const TextStyle().copyWith(fontSize: 32.0, fontWeight: FontWeight.bold, color: Colors.black),
-    headlineMedium: const TextStyle().copyWith(fontSize: 24.0, fontWeight: FontWeight.w600, color: Colors.black),
-    headlineSmall: const TextStyle().copyWith(fontSize: 18.0, fontWeight: FontWeight.w600, color: Colors.black),
+    headlineMedium: const TextStyle().copyWith(fontSize: 17.0, color: Colors.grey),
+    headlineSmall: const TextStyle().copyWith(fontSize: 16.0, color: Colors.grey),
     
-    titleLarge: const TextStyle().copyWith(fontSize: 16.0, fontWeight: FontWeight.w600, color: Colors.black),
-    titleMedium: const TextStyle().copyWith(fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.black),
-    titleSmall: const TextStyle().copyWith(fontSize: 16.0, fontWeight: FontWeight.w400, color: Colors.black),
+    titleLarge: const TextStyle().copyWith(fontSize: 40.0, fontWeight: FontWeight.w300, color: Colors.black),
+    titleMedium: const TextStyle().copyWith(fontSize: 16.0, fontWeight: FontWeight.w300, color: Colors.grey),
+    titleSmall: const TextStyle().copyWith(fontWeight: FontWeight.w500, color: Colors.black),
     
     bodyLarge: const TextStyle().copyWith(fontSize: 14.0, fontWeight: FontWeight.w500, color: Colors.black),
     bodyMedium: const TextStyle().copyWith(fontSize: 14.0, fontWeight: FontWeight.normal, color: Colors.black),
@@ -18,6 +18,11 @@ class TTextTheme {
 
     labelLarge: const TextStyle().copyWith(fontSize: 12.0, fontWeight: FontWeight.normal, color: Colors.black),
     labelMedium: const TextStyle().copyWith(fontSize: 12.0, fontWeight: FontWeight.normal, color: Colors.black.withOpacity(0.5)),
+
+    displayLarge: const TextStyle().copyWith(fontSize: 45,fontWeight: FontWeight.bold, color: Colors.black),
+    displayMedium: const TextStyle().copyWith(fontSize: 21,color: Colors.white),
+    displaySmall: const TextStyle().copyWith(fontSize: 14,fontWeight: FontWeight.w400, color: Color.fromARGB(225, 234, 234, 234)),
+
   );
   static TextTheme darkTextTheme = TextTheme(
     headlineLarge: const TextStyle().copyWith(fontSize: 32.0, fontWeight: FontWeight.bold, color: Colors.white),

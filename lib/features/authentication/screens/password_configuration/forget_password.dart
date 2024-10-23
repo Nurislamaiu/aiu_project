@@ -14,37 +14,36 @@ class ForgetPassword extends StatelessWidget {
     final dark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: dark? Colors.white: Colors.black
-        ),
+        iconTheme: IconThemeData(color: dark ? Colors.white : Colors.black),
       ),
       body: Padding(
         padding: const EdgeInsets.all(TSizes.defaultSpace),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(TTexts.forgetPasswordTitle, style: Theme.of(context).textTheme.headlineMedium),
+            Text(TTexts.forgetPasswordTitle,
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.w600,
+                    color: dark ? Colors.white : Colors.black)),
             const SizedBox(height: TSizes.spaceBtwItems),
-            Text(TTexts.forgetPasswordSubTitle, style: Theme.of(context).textTheme.labelMedium),
+            Text(TTexts.forgetPasswordSubTitle,
+                style: Theme.of(context).textTheme.bodySmall),
             const SizedBox(height: TSizes.spaceBtwSections * 2),
             TextFormField(
-              decoration:
-                  const InputDecoration(labelText: TTexts.email, prefixIcon: Icon(Iconsax.direct_right)),
+              decoration: const InputDecoration(
+                  labelText: TTexts.email,
+                  prefixIcon: Icon(Iconsax.direct_right)),
             ),
             const SizedBox(height: TSizes.spaceBtwSections),
-            SizedBox(width: double.infinity, child: ElevatedButton(onPressed: () => Get.off(()=> const ResetPassword()), child: const Text(TTexts.submit)))
+            SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                    onPressed: () => Get.off(() => const ResetPassword()),
+                    child: const Text(TTexts.submit)))
           ],
         ),
       ),
     );
   }
 }
-
-
-
-
-
-
-
-
-

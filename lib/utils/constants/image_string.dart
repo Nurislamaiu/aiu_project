@@ -18,11 +18,11 @@ class TImages {
   static const String resetPassword = "assets/images/reset_password.png";
   static const String successEmail = "assets/images/animations/email-verify-1.gif";
 
-  static const String shoes = "assets/logos/categories/shoes.png";
-  static const String banner_1 = "assets/images/banners/banner_1.jpg";
-  static const String banner_2 = "assets/images/banners/banner_2.jpg";
-  static const String banner_3 = "assets/images/banners/banner_3.jpg";
-  static const String nike = "assets/images/shoes/nike.png";
+
+  static const String aiu = "assets/logos/aiu.jpg";
+
+  static const String lottieUrl = "assets/lottie_task.json";
+  static const String lottieUrl1 = "assets/lottie_2.json";
 }
 
 

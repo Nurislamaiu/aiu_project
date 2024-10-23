@@ -15,6 +15,7 @@ class OnBoardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dark = THelperFunctions.isDarkMode(context);
     return Padding(
       padding: const EdgeInsets.all(TSizes.defaultSpace),
       child: Column(
@@ -25,7 +26,7 @@ class OnBoardingPage extends StatelessWidget {
               image: AssetImage(image)),
           Text(
             title,
-            style: Theme.of(context).textTheme.headlineMedium,
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontSize: 24.0, fontWeight: FontWeight.w600, color: dark? Colors.white : Colors.black),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: TSizes.spaceBtwItems),

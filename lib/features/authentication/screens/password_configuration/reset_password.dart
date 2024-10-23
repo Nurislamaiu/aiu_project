@@ -12,10 +12,15 @@ class ResetPassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dark = THelperFunctions.isDarkMode(context);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        actions: [IconButton(onPressed: () => Get.back(), icon: const Icon(CupertinoIcons.clear))],
+        actions: [
+          IconButton(
+              onPressed: () => Get.back(),
+              icon: const Icon(CupertinoIcons.clear))
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -24,21 +29,24 @@ class ResetPassword extends StatelessWidget {
             children: [
               Image(
                 image: const AssetImage(TImages.resetPassword),
-                width: THelperFunctions.screenWidth() * 1,
+                width: THelperFunctions.screenWidth() * 0.35,
               ),
               const SizedBox(height: TSizes.spaceBtwSections),
               Text(TTexts.resetPasswordTitle,
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.w600,
+                      color: dark ? Colors.white : Colors.black),
                   textAlign: TextAlign.center),
               const SizedBox(height: TSizes.spaceBtwItems),
               Text(TTexts.resetPasswordSubTitle,
-                  style: Theme.of(context).textTheme.labelMedium,
+                  style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.center),
               const SizedBox(height: TSizes.spaceBtwSections),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: (){},
+                  onPressed: () {},
                   child: const Text(TTexts.done),
                 ),
               ),
@@ -46,7 +54,7 @@ class ResetPassword extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: TextButton(
-                  onPressed: (){},
+                  onPressed: () {},
                   child: const Text(TTexts.resendEmail),
                 ),
               ),
@@ -57,16 +65,3 @@ class ResetPassword extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

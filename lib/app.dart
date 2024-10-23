@@ -1,8 +1,10 @@
+import 'package:aiu_project/features/authentication/screens/login/login.dart';
 import 'package:aiu_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 import 'features/authentication/screens/onboarding/onboarding.dart';
+import 'features/personalization/screens/task/home_view_task.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -14,7 +16,7 @@ class App extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: TAppTheme.lightTheme,
       darkTheme: TAppTheme.darkTheme,
-      home: const OnBoardingScreen(),
+      home: const HomeViewTask(),
     );
   }
 }

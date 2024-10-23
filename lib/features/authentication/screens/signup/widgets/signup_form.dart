@@ -1,7 +1,7 @@
-import 'package:aiu_project/features/authentication/screens/signup/widgets/signup_textspan.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../../../utils/constants/sizes.dart';
@@ -18,6 +18,13 @@ class SignUpForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController userIdController = TextEditingController();
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
+    final TextEditingController phoneController = TextEditingController();
+    final TextEditingController firstNameController = TextEditingController();
+    final TextEditingController lastNameController = TextEditingController();
+
     return Form(
       child: Column(
         children: [
@@ -25,6 +32,7 @@ class SignUpForm extends StatelessWidget {
             children: [
               Expanded(
                 child: TextFormField(
+                  controller: firstNameController,
                   expands: false,
                   decoration: const InputDecoration(
                     labelText: TTexts.firstName,
@@ -35,6 +43,7 @@ class SignUpForm extends StatelessWidget {
               const SizedBox(width: TSizes.spaceBtwInputFields),
               Expanded(
                 child: TextFormField(
+                  controller: lastNameController,
                   expands: false,
                   decoration: const InputDecoration(
                     labelText: TTexts.lastName,
@@ -46,14 +55,16 @@ class SignUpForm extends StatelessWidget {
           ),
           const SizedBox(height: TSizes.spaceBtwInputFields),
           TextFormField(
+            controller: userIdController,
             expands: false,
             decoration: const InputDecoration(
-              labelText: TTexts.username,
+              labelText: TTexts.iin,
               prefixIcon: Icon(Iconsax.user_edit),
             ),
           ),
           const SizedBox(height: TSizes.spaceBtwInputFields),
           TextFormField(
+            controller: emailController,
             expands: false,
             decoration: const InputDecoration(
               labelText: TTexts.email,
@@ -62,6 +73,7 @@ class SignUpForm extends StatelessWidget {
           ),
           const SizedBox(height: TSizes.spaceBtwInputFields),
           TextFormField(
+            controller: phoneController,
             expands: false,
             decoration: const InputDecoration(
               labelText: TTexts.phoneNo,
@@ -70,6 +82,8 @@ class SignUpForm extends StatelessWidget {
           ),
           const SizedBox(height: TSizes.spaceBtwInputFields),
           TextFormField(
+            controller: passwordController,
+            obscureText: true,  // Скрываем пароль
             expands: false,
             decoration: const InputDecoration(
               labelText: TTexts.password,
@@ -78,16 +92,59 @@ class SignUpForm extends StatelessWidget {
             ),
           ),
           const SizedBox(height: TSizes.spaceBtwSections),
-          TextSpanSignUp(dark: dark),
-          const SizedBox(height: TSizes.spaceBtwSections),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-                onPressed: () => Get.to(() => const VerifyEmailScreen()),
+                onPressed: () async {
+                  // Валидация полей перед регистрацией
+                  if (emailController.text.isEmpty ||
+                      passwordController.text.isEmpty ||
+                      userIdController.text.isEmpty ||
+                      firstNameController.text.isEmpty ||
+                      lastNameController.text.isEmpty ||
+                      phoneController.text.isEmpty) {
+                    Get.snackbar('Error', 'All fields are required');
+                    return;
+                  }
+
+                  await registerUser(
+                      emailController.text,
+                      passwordController.text,
+                      userIdController.text,
+                      firstNameController.text,
+                      lastNameController.text,
+                      phoneController.text);
+                },
                 child: const Text(TTexts.createAccount)),
           ),
         ],
       ),
     );
+  }
+}
+
+Future<void> registerUser(String email, String password, String userId,
+    String firstName, String lastName, String phone) async {
+  try {
+    FirebaseAuth.instance.setLanguageCode('en');  // Или другой язык, например 'ru'
+    UserCredential userCredential = await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email, password: password);
+
+    // Сохраняем данные пользователя в Firestore
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userCredential.user!.uid)
+        .set({
+      'userId': userId,
+      'email': email,
+      'first_name': firstName,
+      'last_name': lastName,
+      'phone': phone,
+    });
+
+    Get.to(() => const VerifyEmailScreen());
+  } catch (e) {
+    // Вывод ошибки через Snackbar
+    Get.snackbar('Error', e.toString());
   }
 }

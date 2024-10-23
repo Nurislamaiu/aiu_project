@@ -50,4 +50,11 @@ class TColors {
         Color(0xFFFAD0C4),
         Color(0xFFFAD0C4),
       ]);
+
+  // to-do colors
+  static const Color primaryTaskColor = Color(0xFF4568DC);
+  static const List<Color> primaryGradientTaskColor = [
+    Color(0xFF4568DC),
+    Color(0xFFB06AB3),
+  ];
 }
