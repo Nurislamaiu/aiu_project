@@ -1,8 +1,9 @@
+import 'package:aiu_project/features/personalization/screens/task/screens/task_new/task_new_view.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../utils/constants/colors.dart';
-import '../../../../../utils/constants/sizes.dart';
-
+import '../../../../../../../utils/constants/colors.dart';
+import '../../../../../../../utils/constants/sizes.dart';
 class FAB extends StatelessWidget {
   const FAB({
     super.key,
@@ -13,7 +14,7 @@ class FAB extends StatelessWidget {
     return GestureDetector(
       onTap: (){
         // Func
-        print('Task View');
+        Navigator.push(context, CupertinoPageRoute(builder: (context)=> TaskNewView()));
       },
       child: Material(
         elevation: 10,

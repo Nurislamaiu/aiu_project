@@ -1,13 +1,12 @@
 import 'package:aiu_project/common/extensions/space_exs.dart';
-import 'package:aiu_project/features/personalization/screens/task/widgets/task_widget.dart';
+import 'package:aiu_project/features/personalization/screens/task/screens/task_home/widgets/task_widget.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import '../../../../../utils/constants/colors.dart';
-import '../../../../../utils/constants/image_string.dart';
-import '../../../../../utils/constants/sizes.dart';
-import '../../../../../utils/constants/text_string.dart';
-
+import '../../../../../../../utils/constants/colors.dart';
+import '../../../../../../../utils/constants/image_string.dart';
+import '../../../../../../../utils/constants/sizes.dart';
+import '../../../../../../../utils/constants/text_string.dart';
 class HomeViewTaskBody extends StatefulWidget {
   HomeViewTaskBody({
     super.key,

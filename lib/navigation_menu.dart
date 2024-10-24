@@ -5,8 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-
-import 'features/personalization/screens/task/home_view_task.dart';
+import 'features/personalization/screens/task/screens/task_home/task_home_view.dart';
 
 class NavigationMenu extends StatelessWidget {
   const NavigationMenu({super.key});

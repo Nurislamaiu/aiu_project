@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../utils/constants/colors.dart';
-import '../../../../../utils/constants/sizes.dart';
+import '../../../../../../../utils/constants/colors.dart';
+import '../../../../../../../utils/constants/sizes.dart';
 
 class TaskWidget extends StatelessWidget {
   const TaskWidget({
@@ -51,7 +51,7 @@ class TaskWidget extends StatelessWidget {
               child: Text(
                 'Done',
                 style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+                TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
               ),
             ),
 
