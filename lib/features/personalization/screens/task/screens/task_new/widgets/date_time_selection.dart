@@ -5,11 +5,14 @@ import '../../../../../../../utils/constants/text_string.dart';
 class DateTimeSelectionWidget extends StatelessWidget {
   const DateTimeSelectionWidget({
     super.key,
-    required this.onTap, required this.title,
+    required this.onTap,
+    required this.title,
+    required this.time,
   });
 
   final VoidCallback onTap;
   final String title;
+  final String time;
 
   @override
   Widget build(BuildContext context) {
@@ -35,14 +38,14 @@ class DateTimeSelectionWidget extends StatelessWidget {
             ),
             Container(
               margin: const EdgeInsets.only(right: 10.0),
-              width: 80,
+              padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
               height: 35,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.grey.shade100),
               child: Center(
                 child: Text(
-                  TTexts.timeString,
+                  time,
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
               ),

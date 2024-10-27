@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 
+import '../../../../../../../utils/validators/validation.dart';
+
 class TaskAppBar extends StatefulWidget implements PreferredSizeWidget {
   const TaskAppBar({super.key, required this.drawerKey});
 
@@ -72,6 +74,7 @@ class _TaskAppBarState extends State<TaskAppBar>
               child: IconButton(
                   onPressed: () {
                     //
+                    deleteAllTask(context);
                   },
                   icon: const Icon(
                     CupertinoIcons.trash_fill,

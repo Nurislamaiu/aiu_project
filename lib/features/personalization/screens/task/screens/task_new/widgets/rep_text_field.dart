@@ -7,10 +7,14 @@ class RepTextField extends StatelessWidget {
     super.key,
     required this.controller,
     this.isForDescription = false,
+    required this.onFieldSubmitted,
+    required this.onChange,
   });
 
   final TextEditingController controller;
   final bool isForDescription;
+  final Function(String)? onFieldSubmitted;
+  final Function(String)? onChange;
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +26,11 @@ class RepTextField extends StatelessWidget {
           decoration: InputDecoration(
               hintText: isForDescription ? TTexts.addNote : null,
               prefixIcon:
-              isForDescription ? Icon(Icons.bookmark_border) : null),
+                  isForDescription ? Icon(Icons.bookmark_border) : null),
           controller: controller,
           maxLines: isForDescription ? 1 : 3,
-          onFieldSubmitted: (value) {},
+          onFieldSubmitted: onFieldSubmitted,
+          onChanged: onChange,
         ),
       ),
     );

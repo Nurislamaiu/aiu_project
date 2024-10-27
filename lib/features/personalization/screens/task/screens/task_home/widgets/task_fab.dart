@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../../../utils/constants/colors.dart';
 import '../../../../../../../utils/constants/sizes.dart';
+
 class FAB extends StatelessWidget {
   const FAB({
     super.key,
@@ -12,9 +13,16 @@ class FAB extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         // Func
-        Navigator.push(context, CupertinoPageRoute(builder: (context)=> TaskNewView()));
+        Navigator.push(
+            context,
+            CupertinoPageRoute(
+                builder: (context) => TaskNewView(
+                      titleTaskController: null,
+                      descriptionTaskController: null,
+                      task: null,
+                    )));
       },
       child: Material(
         elevation: 10,
