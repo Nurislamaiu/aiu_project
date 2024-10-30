@@ -40,12 +40,15 @@ class _TaskNewViewState extends State<TaskNewView> {
     descriptionTaskController =
         widget.descriptionTaskController ?? TextEditingController();
   }
+
   bool isTaskAlreadyExits() {
-    return titleTaskController.text.isEmpty &&
-        descriptionTaskController.text.isEmpty;
+    if (widget.titleTaskController?.text == null &&
+        widget.descriptionTaskController?.text == null) {
+      return true;
+    } else {
+      return false;
+    }
   }
-
-
 
   var title;
   var subTitle;
@@ -57,6 +60,7 @@ class _TaskNewViewState extends State<TaskNewView> {
       if (time == null) {
         return DateFormat('hh:mm a').format(DateTime.now()).toString();
       } else {
+        log('$time');
         return DateFormat('hh:mm a').format(time).toString();
       }
     } else {
@@ -101,6 +105,7 @@ class _TaskNewViewState extends State<TaskNewView> {
         widget.task?.save();
 
         /// TODO: pop page
+        Navigator.pop(context);
       } catch (e) {
         updateTaskWarning(context);
       }
@@ -118,10 +123,16 @@ class _TaskNewViewState extends State<TaskNewView> {
         BaseWidget.of(context).dataStore.addTask(task: task);
 
         /// TODO: pop page
+        Navigator.pop(context);
       } else {
         emptyWarning(context);
       }
     }
+  }
+
+  /// Delete task
+  dynamic deleteTask(){
+    return widget.task?.delete();
   }
 
   @override
@@ -241,8 +252,8 @@ class _TaskNewViewState extends State<TaskNewView> {
                 context: context,
                 initialTime: TimeOfDay.now(),
               );
-              setState(() {
-                if (pickedTime != null) {
+              if (pickedTime != null) {
+                setState(() {
                   final now = DateTime.now();
                   final selectedDateTime = DateTime(
                     now.year,
@@ -252,20 +263,18 @@ class _TaskNewViewState extends State<TaskNewView> {
                     pickedTime.minute,
                   );
                   if (widget.task?.createdAtTime == null) {
-                    // Присваиваем значение локальной переменной time
+                    // Assign to the local variable time
                     time = selectedDateTime;
                   } else {
-                    // Присваиваем значение свойству createdAtTime модели task
+                    // Assign to the createdAtTime property of the task model
                     widget.task!.createdAtTime = selectedDateTime;
                   }
-                }
-              });
-
+                });
+              }
             },
             title: TTexts.timeString,
             time: showTime(time),
           ),
-
           DateTimeSelectionWidget(
             onTap: () async {
               DateTime? pickedDate = await showDatePicker(
@@ -275,22 +284,19 @@ class _TaskNewViewState extends State<TaskNewView> {
                 lastDate: DateTime(2028),
               );
 
-              if (pickedDate != null) {
-                setState(() {
-                  if (widget.task?.createdAtDate == null) {
-                    // Присваиваем значение локальной переменной date
-                    date = pickedDate;
-                  } else {
-                    // Присваиваем значение свойству createdAtDate модели task
-                    widget.task!.createdAtDate = pickedDate;
-                  }
-                });
-              }
+              setState(() {
+                if (widget.task?.createdAtDate == null) {
+                  // Присваиваем значение локальной переменной date
+                  date = pickedDate;
+                } else {
+                  // Присваиваем значение свойству createdAtDate модели task
+                  widget.task!.createdAtDate = pickedDate!;
+                }
+              });
             },
             title: TTexts.dateString,
             time: showDate(date),
           ),
-
         ],
       ),
     );
@@ -308,7 +314,10 @@ class _TaskNewViewState extends State<TaskNewView> {
           isTaskAlreadyExits()
               ? Container()
               : MaterialButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    deleteTask();
+                    Navigator.pop(context);
+                  },
                   minWidth: 150,
                   height: 55,
                   shape: RoundedRectangleBorder(
@@ -338,9 +347,9 @@ class _TaskNewViewState extends State<TaskNewView> {
               borderRadius: BorderRadius.circular(15),
             ),
             color: TColors.primaryTaskColor,
-            child: const Text(
-              TTexts.addTaskString,
-              style: TextStyle(color: TColors.white),
+            child: Text(
+              isTaskAlreadyExits() ? TTexts.addTaskString : TTexts.updateTaskString,
+              style: const TextStyle(color: TColors.white),
             ),
           ),
         ],

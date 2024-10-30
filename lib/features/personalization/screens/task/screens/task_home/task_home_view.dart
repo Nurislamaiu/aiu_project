@@ -1,6 +1,5 @@
 import 'package:aiu_project/features/personalization/screens/task/screens/task_home/widgets/task_app_bar.dart';
 import 'package:aiu_project/features/personalization/screens/task/screens/task_home/widgets/task_fab.dart';
-import 'package:aiu_project/features/personalization/screens/task/screens/task_home/widgets/task_slider_drawer.dart';
 import 'package:aiu_project/features/personalization/screens/task/screens/task_home/widgets/task_widget.dart';
 import 'package:aiu_project/main.dart';
 import 'package:animate_do/animate_do.dart';
@@ -24,6 +23,24 @@ class HomeViewTask extends StatefulWidget {
 class _HomeViewTaskState extends State<HomeViewTask> {
   GlobalKey<SliderDrawerState> drawerKey = GlobalKey<SliderDrawerState>();
 
+  dynamic valueOfIndicator(List<TaskModel> task){
+    if(task.isNotEmpty){
+      return task.length;
+    }else{
+      return 3;
+    }
+  }
+
+  int checkDoneTask(List<TaskModel> tasks){
+    int i = 0;
+    for(TaskModel doneTask in tasks){
+      if(doneTask.isCompleted){
+        i++;
+      }
+    }
+    return i;
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -39,13 +56,8 @@ class _HomeViewTaskState extends State<HomeViewTask> {
 
               // FAB
               floatingActionButton: FAB(),
-              body: SliderDrawer(
-                  key: drawerKey,
-                  isDraggable: false,
-                  animationDuration: 1000,
-                  appBar: TaskAppBar(drawerKey: drawerKey),
-                  slider: TaskSliderDrawer(),
-                  child: _buildHomeViewTaskBody(base, tasks)));
+              appBar: TaskAppBar(drawerKey: drawerKey),
+              body: _buildHomeViewTaskBody(base, tasks));
         });
   }
 
@@ -53,7 +65,6 @@ class _HomeViewTaskState extends State<HomeViewTask> {
       BaseWidget base,
       List<TaskModel> tasks,
       ) {
-
     return SafeArea(
       child: SizedBox(
         width: double.infinity,
@@ -68,14 +79,14 @@ class _HomeViewTaskState extends State<HomeViewTask> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Progress indicator
-                  const SizedBox(
+                  SizedBox(
                     width: 35,
                     height: 35,
                     child: CircularProgressIndicator(
-                      value: 1 / 3, // Example progress value
+                      value: checkDoneTask(tasks) / valueOfIndicator(tasks), // Example progress value
                       backgroundColor: Colors.grey,
                       valueColor:
-                          AlwaysStoppedAnimation(TColors.primaryTaskColor),
+                          const AlwaysStoppedAnimation(TColors.primaryTaskColor),
                     ),
                   ),
                   // Space
@@ -91,7 +102,7 @@ class _HomeViewTaskState extends State<HomeViewTask> {
                       ),
                       SizedBox(height: 3),
                       Text(
-                        "1 of 3 Task", // Example text
+                        "${checkDoneTask(tasks)} of ${valueOfIndicator(tasks)} Task", // Example text
                         style: Theme.of(context).textTheme.titleMedium,
                       )
                     ],

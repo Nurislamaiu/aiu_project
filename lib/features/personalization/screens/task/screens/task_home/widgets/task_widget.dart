@@ -1,3 +1,5 @@
+import 'package:aiu_project/features/personalization/screens/task/screens/task_new/task_new_view.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -18,11 +20,9 @@ class TaskWidget extends StatefulWidget {
 }
 
 class _TaskWidgetState extends State<TaskWidget> {
-
-  TextEditingController textEditingControllerForTitle =
-  TextEditingController();
+  TextEditingController textEditingControllerForTitle = TextEditingController();
   TextEditingController textEditingControllerForSubTitle =
-  TextEditingController();
+      TextEditingController();
 
   @override
   void initState() {
@@ -38,11 +38,20 @@ class _TaskWidgetState extends State<TaskWidget> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (ctx) => TaskNewView(
+                titleTaskController: textEditingControllerForTitle,
+                descriptionTaskController: textEditingControllerForSubTitle,
+                task: widget.task),
+          ),
+        );
+      },
       child: AnimatedContainer(
           duration: const Duration(milliseconds: 600),
           margin: const EdgeInsets.symmetric(
@@ -63,6 +72,8 @@ class _TaskWidgetState extends State<TaskWidget> {
             leading: GestureDetector(
               onTap: () {
                 // Check or unCheck
+                widget.task.isCompleted = !widget.task.isCompleted;
+                widget.task.save();
               },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 600),
@@ -116,14 +127,15 @@ class _TaskWidgetState extends State<TaskWidget> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: TSizes.sm, top: TSizes.sm),
+                    padding: const EdgeInsets.only(
+                        bottom: TSizes.sm, top: TSizes.sm),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         // Date
                         Text(
                           DateFormat('hh:mm a')
-                              .format(widget.task.createdAtDate),
+                              .format(widget.task.createdAtTime),
                           style: TextStyle(
                               fontSize: 14,
                               color: widget.task.isCompleted
@@ -133,7 +145,7 @@ class _TaskWidgetState extends State<TaskWidget> {
 
                         // Sub Date
                         Text(
-                          DateFormat.yMMMEd().format(widget.task.createdAtTime),
+                          DateFormat.yMMMEd().format(widget.task.createdAtDate),
                           style: TextStyle(
                               fontSize: 14,
                               color: widget.task.isCompleted
