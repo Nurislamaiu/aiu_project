@@ -4,6 +4,7 @@ import 'package:aiu_project/features/authentication/screens/onboarding/widgets/o
 import 'package:aiu_project/features/authentication/screens/onboarding/widgets/onboarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/image_string.dart';
 import '../../../../utils/constants/text_string.dart';
 import '../../controllers/onboarding_controller.dart';
@@ -16,6 +17,7 @@ class OnBoardingScreen extends StatelessWidget {
     final controller = Get.put(OnBoardingController());
 
     return Scaffold(
+      backgroundColor: TColors.primaryTaskColor,
       body: Stack(
         children: [
           // Horizontal Scrolling Pages
@@ -24,15 +26,15 @@ class OnBoardingScreen extends StatelessWidget {
             onPageChanged: controller.updatePageIndicator,
             children: const [
               OnBoardingPage(
-                  image: TImages.onBoardingImage1,
+                  image: TImages.logo,
                   title: TTexts.onBoardingTitle1,
                   subTitle: TTexts.onBoardingSubTitle1),
               OnBoardingPage(
-                  image: TImages.onBoardingImage2,
+                  image: TImages.logo,
                   title: TTexts.onBoardingTitle2,
                   subTitle: TTexts.onBoardingSubTitle2),
               OnBoardingPage(
-                  image: TImages.onBoardingImage3,
+                  image: TImages.logo,
                   title: TTexts.onBoardingTitle3,
                   subTitle: TTexts.onBoardingSubTitle3),
             ],

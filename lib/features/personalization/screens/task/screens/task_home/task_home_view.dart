@@ -23,9 +23,9 @@ class HomeViewTask extends StatefulWidget {
 class _HomeViewTaskState extends State<HomeViewTask> {
   GlobalKey<SliderDrawerState> drawerKey = GlobalKey<SliderDrawerState>();
 
-  dynamic valueOfIndicator(List<TaskModel> task){
-    if(task.isNotEmpty){
-      return task.length;
+  dynamic valueOfIndicator(List<TaskModel> tasks){
+    if(tasks.isNotEmpty){
+      return tasks.length;
     }else{
       return 3;
     }
@@ -83,6 +83,7 @@ class _HomeViewTaskState extends State<HomeViewTask> {
                     width: 35,
                     height: 35,
                     child: CircularProgressIndicator(
+
                       value: checkDoneTask(tasks) / valueOfIndicator(tasks), // Example progress value
                       backgroundColor: Colors.grey,
                       valueColor:

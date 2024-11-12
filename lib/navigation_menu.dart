@@ -1,10 +1,12 @@
 import 'package:aiu_project/features/authentication/screens/login/login.dart';
 import 'package:aiu_project/utils/constants/colors.dart';
-import 'package:aiu_project/utils/helppers/helper_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:crystal_navigation_bar/crystal_navigation_bar.dart';
+import 'features/personalization/screens/habit/screens/home/index.dart';
+import 'features/personalization/screens/home/home_screen.dart';
 import 'features/personalization/screens/task/screens/task_home/task_home_view.dart';
 
 class NavigationMenu extends StatelessWidget {
@@ -13,25 +15,26 @@ class NavigationMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(NavigationController());
-    final dark = THelperFunctions.isDarkMode(context);
+
     return Scaffold(
+      extendBody: true,
       bottomNavigationBar: Obx(
-        () => NavigationBar(
-          height: 80,
-          selectedIndex: controller.selectedIndex.value,
-          elevation: 0,
-          onDestinationSelected: (index) =>
-              controller.selectedIndex.value = index,
-          backgroundColor: dark ? TColors.black : Colors.white,
-          indicatorColor: dark
-              ? TColors.white.withOpacity(0.1)
-              : TColors.black.withOpacity(0.1),
-          destinations: const [
-            NavigationDestination(icon: Icon(Iconsax.home), label: 'Home'),
-            NavigationDestination(icon: Icon(Iconsax.task), label: 'Store'),
-            NavigationDestination(icon: Icon(Iconsax.heart), label: 'Wishlist'),
-            NavigationDestination(icon: Icon(Iconsax.user), label: 'Profile'),
+        () => CrystalNavigationBar(
+          backgroundColor: Colors.grey.withOpacity(0.5),
+          unselectedItemColor: TColors.black,
+          selectedItemColor: Colors.white,
+          indicatorColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          items: [
+            CrystalNavigationBarItem(icon: Iconsax.home),
+            CrystalNavigationBarItem(icon: Iconsax.task),
+            CrystalNavigationBarItem(
+                icon: Iconsax.additem, selectedColor: Colors.blue),
+            CrystalNavigationBarItem(icon: Iconsax.user),
+            CrystalNavigationBarItem(icon: Iconsax.setting),
           ],
+          currentIndex: controller.selectedIndex.value,
+          onTap: (index) => controller.selectedIndex.value = index,
         ),
       ),
       body: Obx(() => controller.screens[controller.selectedIndex.value]),
@@ -43,14 +46,17 @@ class NavigationController extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
 
   final screens = [
-    Container(color: Colors.green),
+    HomeScreen(),
     HomeViewTask(),
-    Container(color: Colors.red),
+    Home(),
     Container(
       color: Colors.yellow,
       child: Center(
-          child:
-              IconButton(onPressed: () => signOut(), icon: Icon(Icons.delete_outline, color: Colors.black,))),
+        child: IconButton(
+          onPressed: () => signOut(),
+          icon: Icon(Icons.delete_outline, color: Colors.black),
+        ),
+      ),
     ),
   ];
 }
@@ -64,4 +70,3 @@ Future<void> signOut() async {
     print('Ошибка при выходе: $e');
   }
 }
-

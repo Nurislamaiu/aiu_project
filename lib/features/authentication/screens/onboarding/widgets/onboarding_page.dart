@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../../utils/constants/sizes.dart';
 import '../../../../../utils/helppers/helper_functions.dart';
@@ -19,20 +20,29 @@ class OnBoardingPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(TSizes.defaultSpace),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Image(
-              width: THelperFunctions.screenWidth() * 0.8,
-              height: THelperFunctions.screenHeight() * 0.6,
+              width: THelperFunctions.screenWidth() * 0.2,
+              height: THelperFunctions.screenHeight() * 0.2,
               image: AssetImage(image)),
+          const SizedBox(height: TSizes.spaceBtwItems),
           Text(
             title,
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontSize: 24.0, fontWeight: FontWeight.w600, color: dark? Colors.white : Colors.black),
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontSize: 56.0,
+                fontWeight: FontWeight.w600,
+                color: Colors.white),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: TSizes.spaceBtwItems),
           Text(
             subTitle,
-            style: Theme.of(context).textTheme.bodyMedium,
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(fontSize: 26, color: Colors.white),
             textAlign: TextAlign.center,
           ),
         ],

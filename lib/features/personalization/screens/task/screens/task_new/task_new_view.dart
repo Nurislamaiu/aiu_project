@@ -96,33 +96,31 @@ class _TaskNewViewState extends State<TaskNewView> {
 
   /// Main Function for creating or updating tasks
   dynamic isTaskAlreadyExistUpdateOtherWiseCreate() {
-    /// HERE WE UPDATE CURRENT TASK
     if (widget.titleTaskController?.text != null &&
         widget.descriptionTaskController?.text != null) {
       try {
-        widget.titleTaskController?.text = title;
-        widget.descriptionTaskController?.text = subTitle;
+        // Обновляем значение в модели
+        widget.task?.title = title;
+        widget.task?.subTitle = subTitle;
+
+        // Сохраняем обновленное значение
         widget.task?.save();
 
-        /// TODO: pop page
         Navigator.pop(context);
       } catch (e) {
         updateTaskWarning(context);
       }
-
-      /// HERE WE CREATE A NEW TASK
     } else {
       if (title != null && subTitle != null) {
         var task = TaskModel.create(
-            title: title,
-            subTitle: subTitle,
-            createdAtTime: time,
-            createdAtDate: date);
+          title: title,
+          subTitle: subTitle,
+          createdAtTime: time,
+          createdAtDate: date,
+        );
 
-        /// We are adding this new task to HIVE DB using inherited widget
         BaseWidget.of(context).dataStore.addTask(task: task);
 
-        /// TODO: pop page
         Navigator.pop(context);
       } else {
         emptyWarning(context);
@@ -131,15 +129,19 @@ class _TaskNewViewState extends State<TaskNewView> {
   }
 
   /// Delete task
-  dynamic deleteTask(){
+  dynamic deleteTask() {
     return widget.task?.delete();
   }
 
   @override
   void dispose() {
+    if (widget.titleTaskController == null) {
+      titleTaskController.dispose();
+    }
+    if (widget.descriptionTaskController == null) {
+      descriptionTaskController.dispose();
+    }
     super.dispose();
-    titleTaskController.dispose();
-    descriptionTaskController.dispose();
   }
 
   @override
@@ -348,7 +350,9 @@ class _TaskNewViewState extends State<TaskNewView> {
             ),
             color: TColors.primaryTaskColor,
             child: Text(
-              isTaskAlreadyExits() ? TTexts.addTaskString : TTexts.updateTaskString,
+              isTaskAlreadyExits()
+                  ? TTexts.addTaskString
+                  : TTexts.updateTaskString,
               style: const TextStyle(color: TColors.white),
             ),
           ),

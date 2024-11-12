@@ -23,6 +23,9 @@ class TImages {
 
   static const String lottieUrl = "assets/lottie_task.json";
   static const String lottieUrl1 = "assets/lottie_2.json";
+
+
+  static const String logo = "assets/icons/logo.png";
 }
 
 
