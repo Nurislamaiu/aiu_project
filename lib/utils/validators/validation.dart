@@ -81,6 +81,15 @@ dynamic noTaskWarning(BuildContext context) {
   }, panaraDialogType: PanaraDialogType.warning);
 }
 
+dynamic noLessonWarning(BuildContext context) {
+  return PanaraInfoDialog.showAnimatedGrow(context,
+      title: TTexts.oopsMsg,
+      message: "All fields are required!",
+      buttonText: "Okay", onTapDismiss: () {
+    Navigator.pop(context);
+  }, panaraDialogType: PanaraDialogType.error);
+}
+
 dynamic deleteAllTask(BuildContext context) {
   return PanaraConfirmDialog.show(
     context,

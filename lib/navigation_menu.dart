@@ -7,6 +7,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:crystal_navigation_bar/crystal_navigation_bar.dart';
 import 'features/personalization/screens/habit/screens/home/index.dart';
 import 'features/personalization/screens/home/home_screen.dart';
+import 'features/personalization/screens/schedule/home_schedule.dart';
 import 'features/personalization/screens/task/screens/task_home/task_home_view.dart';
 
 class NavigationMenu extends StatelessWidget {
@@ -49,6 +50,7 @@ class NavigationController extends GetxController {
     HomeScreen(),
     HomeViewTask(),
     Home(),
+    ScheduleScreen(),
     Container(
       color: Colors.yellow,
       child: Center(

@@ -91,7 +91,7 @@ Future<void> loginWithIdAndPassword(String userId, String password) async {
       // Авторизуемся через email и пароль
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-      Get.to(() => const NavigationMenu());
+      Get.off(() => const NavigationMenu());
 
       print('Logged in as: ${userCredential.user!.email}');
     } else {

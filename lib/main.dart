@@ -5,14 +5,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
-
 import 'app.dart';
 
-Future<void> main() async {
+void main() async {
   // Firebase initialization
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
   // Hive initialization
   await Hive.initFlutter();
 
@@ -21,7 +19,6 @@ Future<void> main() async {
 
   // Open boxes
   var taskBox = await Hive.openBox<TaskModel>(HiveDataStore.boxName);
-
   // Clean up old tasks that aren't from today
   taskBox.values.forEach((task) {
     if (task.createdAtTime.day != DateTime.now().day) {
