@@ -121,106 +121,145 @@ class _AllLessonsScreenState extends State<AllLessonsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Все уроки"),
-        backgroundColor: Color(0xFF3A6FF2),
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('users')
-            .doc(widget.userId)
-            .collection('lessons')
-            .orderBy('day')
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text("Нет добавленных уроков"));
-          }
-
-          final lessons = snapshot.data!.docs;
-
-          final Map<String, List<Map<String, dynamic>>> lessonsByDay = {
-            'Пн': [],
-            'Вт': [],
-            'Ср': [],
-            'Чт': [],
-            'Пт': [],
-            'Сб': [],
-          };
-
-          for (var lesson in lessons) {
-            final data = lesson.data() as Map<String, dynamic>;
-            final day = data['day'] ?? '';
-            if (lessonsByDay.containsKey(day)) {
-              lessonsByDay[day]!.add(data);
+    return WillPopScope(
+      onWillPop: () async {
+        if (_overlayEntry != null) {
+          _closeOverlay();
+          return false; // Предотвращает закрытие экрана
+        }
+        return true; // Разрешает закрытие экрана
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "Все уроки",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Color(0xFF3A6FF2),
+        ),
+        body: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('users')
+              .doc(widget.userId)
+              .collection('lessons')
+              .orderBy('day')
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
             }
-          }
+            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              return Center(child: Text("Нет добавленных уроков"));
+            }
 
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-              ),
-              itemCount: lessonsByDay.keys.length,
-              itemBuilder: (context, index) {
-                final day = lessonsByDay.keys.toList()[index];
-                final dayLessons = lessonsByDay[day]!;
+            final lessons = snapshot.data!.docs;
 
-                return GestureDetector(
-                  onTap: () => _openOverlay(day, context, dayLessons),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          day,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF3A6FF2),
+            final Map<String, List<Map<String, dynamic>>> lessonsByDay = {
+              'Пн': [],
+              'Вт': [],
+              'Ср': [],
+              'Чт': [],
+              'Пт': [],
+              'Сб': [],
+            };
+
+            for (var lesson in lessons) {
+              final data = lesson.data() as Map<String, dynamic>;
+              final day = data['day'] ?? '';
+              if (lessonsByDay.containsKey(day)) {
+                lessonsByDay[day]!.add(data);
+              }
+            }
+
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                ),
+                itemCount: lessonsByDay.keys.length,
+                itemBuilder: (context, index) {
+                  final day = lessonsByDay.keys.toList()[index];
+                  final dayLessons = lessonsByDay[day]!;
+
+                  return GestureDetector(
+                    onTap: dayLessons.isNotEmpty
+                        ? () => _openOverlay(day, context, dayLessons)
+                        : null,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            day,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF3A6FF2),
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 8),
-                        Expanded(
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: dayLessons.length,
-                            itemBuilder: (context, index) {
-                              final lesson = dayLessons[index];
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 8.0),
-                                child: Text(
-                                  "${lesson['subject']} (${lesson['startTime']} - ${lesson['endTime']})",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black,
+                          SizedBox(height: 8),
+                          Expanded(
+                            child: dayLessons.isNotEmpty
+                                ? ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: dayLessons.length,
+                              itemBuilder: (context, index) {
+                                final lesson = dayLessons[index];
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "${lesson['subject']}",
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      Text(
+                                        "${lesson['startTime']} - ${lesson['endTime']}",
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
                                   ),
+                                );
+                              },
+                            )
+                                : Center(
+                              child: Text(
+                                "Нет уроков",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.black.withOpacity(0.6),
                                 ),
-                              );
-                            },
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
-          );
-        },
+                  );
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }
+
 }

@@ -1,5 +1,6 @@
 import 'package:aiu_project/main.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:ftoast/ftoast.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
 
@@ -53,6 +54,8 @@ class TValidator {
   }
 }
 
+
+
 dynamic emptyWarning(BuildContext context) {
   return FToast.toast(context,
       msg: TTexts.oopsMsg,
@@ -88,6 +91,15 @@ dynamic noLessonWarning(BuildContext context) {
       buttonText: "Okay", onTapDismiss: () {
     Navigator.pop(context);
   }, panaraDialogType: PanaraDialogType.error);
+}
+
+dynamic lessonDone(BuildContext context) {
+  return PanaraInfoDialog.showAnimatedGrow(context,
+      title: "Успешно",
+      message: "Урок добавлен",
+      buttonText: "Okay", onTapDismiss: () {
+    Navigator.pop(context);
+  }, panaraDialogType: PanaraDialogType.custom,color: Color(0xFF3A6FF2));
 }
 
 dynamic deleteAllTask(BuildContext context) {

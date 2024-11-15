@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../utils/validators/validation.dart';
 import 'new.dart';
 
 class ScheduleScreen extends StatefulWidget {
@@ -70,6 +71,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       'teacher': _teacherController.text,
       'day': _selectedDay,
     };
+
+    lessonDone(context);
 
     try {
       await FirebaseFirestore.instance
@@ -191,9 +194,18 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         labelStyle: TextStyle(color: Color(0xFF3A6FF2)),
         filled: true,
         fillColor: Colors.white,
+
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Color(0xFFE0E0E0), width: 1),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Color(0xFF3A6FF2), width: 2),
         ),
         contentPadding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
       ),
@@ -208,6 +220,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           "Расписание",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
         ),
+        actions: [
+          TextButton(onPressed: _viewAllLessons, child: Text("Посмотреть все", style: TextStyle(color: Colors.white),))
+        ],
         backgroundColor: Color(0xFF3A6FF2),
         elevation: 4,
         shape: RoundedRectangleBorder(
@@ -218,7 +233,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         ),
       ),
       body: Container(
-        color: Color(0xFFF0F2F5),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: SingleChildScrollView(
@@ -249,13 +263,23 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                         child: AbsorbPointer(
                           child: _buildTextField(
                               controller: _endTimeController,
-                              labelText: "Время конца (больше начала)",
+                              labelText: "Время конца",
                               type: TextInputType.text),
                         ),
                       ),
                     ),
                   ],
                 ),
+                SizedBox(height: 16),
+                _buildTextField(
+                    controller: _roomController,
+                    labelText: "Аудитория",
+                    type: TextInputType.number),
+                SizedBox(height: 16),
+                _buildTextField(
+                    controller: _teacherController,
+                    labelText: "Преподаватель",
+                    type: TextInputType.text),
                 SizedBox(height: 16),
                 DropdownButtonFormField<String>(
                   value: _selectedBuilding,
@@ -264,7 +288,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     style: TextStyle(
                       color: Color(0xFF3A6FF2),
                       fontSize: 14,
-                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   items: [
@@ -278,8 +301,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       building,
                       style: TextStyle(
                         color: _selectedBuilding == building ? Colors.black : Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
                       ),
                     ),
                   )).toList(),
@@ -313,17 +335,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       _selectedBuilding = value;
                     });
                   },
+                  isExpanded: true,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 ),
-                SizedBox(height: 16),
-                _buildTextField(
-                    controller: _roomController,
-                    labelText: "Аудитория",
-                    type: TextInputType.number),
-                SizedBox(height: 16),
-                _buildTextField(
-                    controller: _teacherController,
-                    labelText: "Преподаватель",
-                    type: TextInputType.text),
                 SizedBox(height: 16),
                 DropdownButtonFormField<String>(
                   value: _selectedDay,
@@ -331,8 +345,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     "Выберите день недели",
                     style: TextStyle(
                       color: Color(0xFF3A6FF2),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
                     ),
                   ),
                   items: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]
@@ -352,8 +365,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     labelText: "День недели",
                     labelStyle: TextStyle(
                       color: Color(0xFF3A6FF2),
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
                     ),
                     filled: true,
                     fillColor: Colors.white,
@@ -383,18 +395,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 ElevatedButton(
                   onPressed: _addLesson,
                   child: Text("Добавить урок"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF3A6FF2),
-                    padding:
-                    EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: _viewAllLessons,
-                  child: Text("Все уроки"),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF3A6FF2),
                     padding:
