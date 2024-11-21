@@ -444,27 +444,139 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
   }
 
   Widget _buildQuickHabit(String title, IconData icon, Color color) {
-    return GestureDetector(
-      onTap: () async {
-        // Автоматическое создание привычки
-        await FirebaseFirestore.instance.collection('habits').add({
-          'title': title,
-          'icon': _icons.indexOf(icon),
-          'color': _colors.indexOf(color),
-          'repeat': _allDays, // Каждый день
-          'streak': 0,
-          'bestStreak': 0,
-          'completedThisWeek': 0,
-          'completionRate': 0,
-          'datesCompleted': [],
-        });
+    List<String> _selectedDays = []; // Список выбранных дней для текущей привычки
 
-        // Уведомление об успешном добавлении
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Привычка "$title" создана'),
-          duration: Duration(seconds: 2),
-        ));
-      },
+    // Открыть модальное окно для выбора дней
+    void _showDaysPicker() {
+      showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setModalState) {
+              return Container(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Выберите дни недели для "$title"',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Wrap(
+                      spacing: 8.0,
+                      children: _allDays.map((day) {
+                        final bool isSelected = _selectedDays.contains(day);
+                        return GestureDetector(
+                          onTap: () {
+                            setModalState(() {
+                              if (isSelected) {
+                                _selectedDays.remove(day);
+                              } else {
+                                _selectedDays.add(day);
+                              }
+                            });
+                          },
+                          child: Container(
+                            width: 90,
+                            height: 50,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              gradient: isSelected
+                                  ? LinearGradient(
+                                colors: [primaryColor, secondaryColor],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              )
+                                  : null,
+                              color: isSelected ? null : Colors.grey[300],
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 4,
+                                  offset: Offset(2, 2),
+                                ),
+                              ],
+                            ),
+                            child: Text(
+                              day.substring(0, 3), // Первые три буквы дня
+                              style: TextStyle(
+                                color: isSelected ? Colors.white : Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                    SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (_selectedDays.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text('Выберите хотя бы один день недели'),
+                            duration: Duration(seconds: 2),
+                          ));
+                          return;
+                        }
+
+                        // Создать привычку
+                        await FirebaseFirestore.instance
+                            .collection('habits')
+                            .add({
+                          'title': title,
+                          'icon': _icons.indexOf(icon),
+                          'color': _colors.indexOf(color),
+                          'repeat': _selectedDays,
+                          'streak': 0,
+                          'bestStreak': 0,
+                          'completedThisWeek': 0,
+                          'completionRate': 0,
+                          'datesCompleted': [],
+                        });
+
+                        Navigator.pop(context); // Закрыть модальное окно
+
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Привычка "$title" создана'),
+                          duration: Duration(seconds: 2),
+                        ));
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding:
+                        EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                      ),
+                      child: Text(
+                        'Создать привычку',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      );
+    }
+
+    return GestureDetector(
+      onTap: _showDaysPicker, // Открыть выбор дней недели
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
@@ -501,5 +613,6 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
       ),
     );
   }
+
 
 }
