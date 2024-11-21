@@ -17,7 +17,7 @@ class OnBoardingScreen extends StatelessWidget {
     final controller = Get.put(OnBoardingController());
 
     return Scaffold(
-      backgroundColor: TColors.primaryTaskColor,
+      backgroundColor: TColors.white,
       body: Stack(
         children: [
           // Horizontal Scrolling Pages
@@ -26,15 +26,15 @@ class OnBoardingScreen extends StatelessWidget {
             onPageChanged: controller.updatePageIndicator,
             children: const [
               OnBoardingPage(
-                  image: TImages.logo,
+                  image: TImages.onBoardingImage1,
                   title: TTexts.onBoardingTitle1,
                   subTitle: TTexts.onBoardingSubTitle1),
               OnBoardingPage(
-                  image: TImages.logo,
+                  image: TImages.onBoardingImage2,
                   title: TTexts.onBoardingTitle2,
                   subTitle: TTexts.onBoardingSubTitle2),
               OnBoardingPage(
-                  image: TImages.logo,
+                  image: TImages.onBoardingImage3,
                   title: TTexts.onBoardingTitle3,
                   subTitle: TTexts.onBoardingSubTitle3),
             ],

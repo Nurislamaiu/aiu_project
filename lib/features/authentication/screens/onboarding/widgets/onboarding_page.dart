@@ -16,7 +16,6 @@ class OnBoardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
     return Padding(
       padding: const EdgeInsets.all(TSizes.defaultSpace),
       child: Column(
@@ -24,16 +23,15 @@ class OnBoardingPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Image(
-              width: THelperFunctions.screenWidth() * 0.2,
-              height: THelperFunctions.screenHeight() * 0.2,
+              width: THelperFunctions.screenWidth() * 0.5,
+              height: THelperFunctions.screenHeight() * 0.5,
               image: AssetImage(image)),
-          const SizedBox(height: TSizes.spaceBtwItems),
           Text(
             title,
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                fontSize: 56.0,
+                fontSize: 26.0,
                 fontWeight: FontWeight.w600,
-                color: Colors.white),
+                color: Colors.black),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: TSizes.spaceBtwItems),
@@ -42,7 +40,7 @@ class OnBoardingPage extends StatelessWidget {
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium
-                ?.copyWith(fontSize: 26, color: Colors.white),
+                ?.copyWith(fontSize: 14, color: Colors.black),
             textAlign: TextAlign.center,
           ),
         ],

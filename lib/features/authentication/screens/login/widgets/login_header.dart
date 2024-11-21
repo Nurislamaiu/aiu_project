@@ -20,7 +20,7 @@ class TLoginHeader extends StatelessWidget {
         Image(
             key: ValueKey(dark),
             height: 120,
-            image: AssetImage(dark ? TImages.aiu : TImages.aiu)),
+            image: AssetImage(dark ? TImages.logo : TImages.logo)),
         Text(TTexts.loginTitle,
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 fontSize: 24.0,

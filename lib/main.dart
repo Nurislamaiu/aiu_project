@@ -1,5 +1,4 @@
 import 'package:aiu_project/features/personalization/models/task_model.dart';
-import 'package:aiu_project/features/personalization/screens/habit/models/habit.dart';
 import 'package:aiu_project/features/personalization/screens/task/data/hive_data_store.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +12,7 @@ void main() async {
   await Firebase.initializeApp();
   // Hive initialization
   await Hive.initFlutter();
+  await Hive.openBox('profile');
 
   // Register Hive Adapters
   Hive.registerAdapter<TaskModel>(TaskModelAdapter());
@@ -26,11 +26,13 @@ void main() async {
     }
   });
 
-  // Run the app with MultiProvider for all the providers
-  runApp(ChangeNotifierProvider(
-      create: (context) => habitAdapter, // Ensure habitAdapter is defined properly
+  // Run the app with Provider for HiveDataStore
+  runApp(
+    Provider<HiveDataStore>(
+      create: (_) => HiveDataStore(),
       child: BaseWidget(child: App()),
-    ),);
+    ),
+  );
 }
 
 class BaseWidget extends InheritedWidget {

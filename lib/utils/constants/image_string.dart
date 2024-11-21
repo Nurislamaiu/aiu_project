@@ -8,11 +8,11 @@ class TImages {
   static const String facebook = "assets/logos/facebook_icon.png";
 
   static const String onBoardingImage1 =
-      "assets/images/on_boarding_images/on-boarding-screen-1.gif";
+      "assets/on_boarding_images/on-boarding-screen-1.png";
   static const String onBoardingImage2 =
-      "assets/images/on_boarding_images/on-boarding-screen-2.gif";
+      "assets/on_boarding_images/on-boarding-screen-2.png";
   static const String onBoardingImage3 =
-      "assets/images/on_boarding_images/on-boarding-screen-3.gif";
+      "assets/on_boarding_images/on-boarding-screen-3.png";
 
   static const String verificationEmail = "assets/images/email.png";
   static const String resetPassword = "assets/images/reset_password.png";

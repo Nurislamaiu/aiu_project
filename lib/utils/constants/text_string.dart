@@ -1,71 +1,71 @@
 class TTexts {
-  static const String onBoardingTitle1 = 'AIU HUB';
-  static const String onBoardingTitle2 = 'Select Payment Method';
-  static const String onBoardingTitle3 = 'Deliver at your door step';
+  static const String onBoardingTitle1 = 'Твоя жизнь — твой ритм';
+  static const String onBoardingTitle2 = 'Финансовая гармония';
+  static const String onBoardingTitle3 = 'Мир в твоих руках';
 
   static const String onBoardingSubTitle1 =
-      'Welcome to a AIU!';
+      'Создавай привычки и задачи, которые делают твой день продуктивным и осмысленным';
   static const String onBoardingSubTitle2 =
-      'For Seamless Transactions, Choose Your Payment Path - Your Convenience Our Priority!';
+      'Секрет уверенности — контроль над расходами. Позволь нам помочь!';
   static const String onBoardingSubTitle3 =
-      'From Our Doorstep to Yours - Swift, Secure, and Contactless Delivery!';
+      'Кофе, еда, помощь — всё, что нужно, всегда рядом. В твоем университете!';
 
-  static const String loginTitle = 'Мы рады что вы с нами';
+  static const String loginTitle = 'Мы рады, что вы с нами';
   static const String loginSubTitle =
       'Я рад видеть вас снова. Вы можете продолжить с того места, где остановились, войдя в систему';
-  static const String password = 'Password';
-  static const String rememberMe = 'Remember Me';
-  static const String forgetPassword = 'Forget Password';
-  static const String signIn = 'Sign In';
-  static const String createAccount = 'Create Account';
-  static const String orSignInWith = 'Or sign in with';
-  static const String orSignUpWith = 'Or sign up with';
+  static const String password = 'Пароль';
+  static const String rememberMe = 'Запомнить меня';
+  static const String forgetPassword = 'Забыли пароль';
+  static const String signIn = 'Войти';
+  static const String createAccount = 'Создать аккаунт';
+  static const String orSignInWith = 'Или войти с помощью';
+  static const String orSignUpWith = 'Или зарегистрироваться с помощью';
   static const String signUpTitle = 'Регистрация';
   static const String signUpSubTitle =
       'Здравствуйте, я думаю, вы здесь новенький. Вы можете начать использовать приложение после регистрации';
-  static const String firstName = 'First Name';
-  static const String lastName = 'Last Name';
-  static const String username = 'Username';
-  static const String email = 'Email';
+  static const String firstName = 'Имя';
+  static const String lastName = 'Фамилия';
+  static const String username = 'Имя пользователя';
+  static const String email = 'Электронная почта';
   static const String iin = 'ИИН';
-  static const String phoneNo = 'Phone Number';
-  static const String iAgreeTo = 'I agree to';
-  static const String and = 'and';
-  static const String termsOdUse = 'Terms od use';
-  static const String privatePolicy = 'Private policy';
-  static const String tContinue = 'Continue';
-  static const String confirmEmail = 'Verify your email address';
-  static const String resendEmail = 'Resend Email';
+  static const String phoneNo = 'Номер телефона';
+  static const String iAgreeTo = 'Я согласен с';
+  static const String and = 'и';
+  static const String termsOdUse = 'Условиями использования';
+  static const String privatePolicy = 'Политикой конфиденциальности';
+  static const String tContinue = 'Продолжить';
+  static const String confirmEmail = 'Подтвердите ваш адрес электронной почты';
+  static const String resendEmail = 'Отправить письмо повторно';
   static const String confirmEmailSubTitle =
-      'Congratulations! Your Account Awaits: Verify Your Email to Start Shopping and Experience a World of Unrivaled Deals and Personalized Offers.';
+      'Поздравляем! Ваш аккаунт готов: подтвердите адрес электронной почты, чтобы начать покупки и открыть мир эксклюзивных предложений и персонализированных акций.';
   static const String yourAccountCreatedTitle =
-      'Your account successfully created!';
+      'Ваш аккаунт успешно создан!';
   static const String yourAccountCreatedSubTitle =
-      "Your account has been successfully created! Welcome to our community, we're glad to have you!";
-  static const String forgetPasswordTitle = 'Forgot Your Password?';
+      'Ваш аккаунт успешно создан! Добро пожаловать в наше сообщество, мы рады вам!';
+  static const String forgetPasswordTitle = 'Забыли пароль?';
   static const String forgetPasswordSubTitle =
-      "Don’t worry! Enter your email, and we’ll help you reset your password.";
-  static const String submit = 'Submit';
-  static const String done = 'Done';
-  static const String resetPasswordTitle = 'Reset Your Password';
+      'Не переживайте! Введите вашу электронную почту, и мы поможем вам сбросить пароль.';
+  static const String submit = 'Отправить';
+  static const String done = 'Готово';
+  static const String resetPasswordTitle = 'Сбросьте ваш пароль';
   static const String resetPasswordSubTitle =
-      "Create a new password for your account. Make sure it's strong and easy to remember.";
-  static const String homeAppBarTitle = 'Good day for shopping';
-  static const String homeAppBarSubTitle = 'Ilyasov Nurislam';
+      'Создайте новый пароль для вашего аккаунта. Убедитесь, что он надёжный и легко запоминающийся.';
+  static const String homeAppBarTitle = 'Хороший день для покупок';
+  static const String homeAppBarSubTitle = 'Ильясов Нурислам';
 
-  static const String taskTitle = 'My Task';
-  static const String deletedTask = "This task was deleted";
-  static const String doneAllTask = "You Have Done All Tasks!";
-  static const String addNewTask = "Add New ";
-  static const String updateCurrentTask = "Update ";
-  static const String taskString = "Task";
-  static const String titleOfTitleTextField = "What are you planing";
-  static const String addNote = 'Add Note';
-  static const String timeString = "Time";
-  static const String dateString = "Date";
-  static const String deleteTask = "Delete Task";
-  static const String addTaskString = "Add Task";
-  static const String updateTaskString = "Update Task";
-  static const String oopsMsg = "0ops!";
-  static const String areYouSure = "Are You Sure?";
+  static const String taskTitle = 'Моя задача';
+  static const String deletedTask = 'Эта задача была удалена';
+  static const String doneAllTask = 'Вы выполнили все задачи!';
+  static const String addNewTask = 'Добавить новую ';
+  static const String updateCurrentTask = 'Обновить ';
+  static const String taskString = 'задачу';
+  static const String titleOfTitleTextField = 'Что вы планируете';
+  static const String addNote = 'Добавить заметку';
+  static const String timeString = 'Время';
+  static const String dateString = 'Дата';
+  static const String deleteTask = 'Удалить задачу';
+  static const String addTaskString = 'Добавить задачу';
+  static const String updateTaskString = 'Обновить задачу';
+  static const String oopsMsg = 'Упс!';
+  static const String areYouSure = 'Вы уверены?';
 }

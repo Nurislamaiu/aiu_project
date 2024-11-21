@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:crystal_navigation_bar/crystal_navigation_bar.dart';
-import 'features/personalization/screens/habit/screens/home/index.dart';
+import 'features/personalization/screens/habit/screens/habit_home.dart';
 import 'features/personalization/screens/home/home_screen.dart';
+import 'features/personalization/screens/profile/profile.dart';
 import 'features/personalization/screens/schedule/home_schedule.dart';
 import 'features/personalization/screens/task/screens/task_home/task_home_view.dart';
 
@@ -49,26 +50,8 @@ class NavigationController extends GetxController {
   final screens = [
     HomeScreen(),
     HomeViewTask(),
-    Home(),
+    HabitHomeScreen(),
     ScheduleScreen(),
-    Container(
-      color: Colors.yellow,
-      child: Center(
-        child: IconButton(
-          onPressed: () => signOut(),
-          icon: Icon(Icons.delete_outline, color: Colors.black),
-        ),
-      ),
-    ),
+    ProfileScreen()
   ];
-}
-
-Future<void> signOut() async {
-  try {
-    await FirebaseAuth.instance.signOut();
-    print('Выход успешно выполнен');
-    Get.to(LoginScreen());
-  } catch (e) {
-    print('Ошибка при выходе: $e');
-  }
 }
