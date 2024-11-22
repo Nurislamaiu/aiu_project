@@ -1,5 +1,8 @@
+import 'package:aiu_project/app.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:iconsax/iconsax.dart';
 
 class AddHabitScreen extends StatefulWidget {
@@ -82,15 +85,16 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
     if (_titleController.text.isNotEmpty) {
       await FirebaseFirestore.instance.collection('habits').add({
         'title': _titleController.text,
-        'icon': _icons.indexOf(_selectedIcon),
-        'color': _colors.indexOf(_selectedColor),
-        'repeat': _selectedDays,
+        'icon': _icons.indexOf(_selectedIcon), // Сохраняем индекс значка
+        'color': _selectedColor.value, // Сохраняем значение цвета
+        'repeat': _selectedDays, // Выбранные дни недели
         'streak': 0,
         'bestStreak': 0,
         'completedThisWeek': 0,
         'completionRate': 0,
         'datesCompleted': [],
       });
+
       Navigator.pop(context);
     }
   }
@@ -204,6 +208,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text('Добавить привычку'),
@@ -351,7 +356,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                 Wrap(
                   spacing: 8.0,
                   children: _allDays.map((day) {
-                    final bool isSelected = _selectedDays.contains(day); // Проверка выбранного дня
+                    final bool isSelected = _selectedDays.contains(day);
                     return GestureDetector(
                       onTap: () {
                         setState(() {
@@ -363,8 +368,8 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                         });
                       },
                       child: Container(
-                        width: 45,
-                        height: 45,
+                        width: 40,
+                        height: 40,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
@@ -397,6 +402,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                 ),
               ],
             ),
+            SizedBox(height: 16),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -425,6 +431,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                 ),
               ],
             ),
+            SizedBox(height: 16),
             ElevatedButton(
               onPressed: _createHabit,
               style: ElevatedButton.styleFrom(
@@ -463,7 +470,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Выберите дни недели для "$title"',
+                      'Выберите дни недели для \n"$title"',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -471,6 +478,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                     ),
                     SizedBox(height: 16),
                     Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       spacing: 8.0,
                       children: _allDays.map((day) {
                         final bool isSelected = _selectedDays.contains(day);
@@ -485,8 +493,8 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                             });
                           },
                           child: Container(
-                            width: 90,
-                            height: 50,
+                            width: 40,
+                            height: 40,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
@@ -518,51 +526,50 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                       }).toList(),
                     ),
                     SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () async {
-                        if (_selectedDays.isEmpty) {
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          if (_selectedDays.isEmpty) {
+                            Get.snackbar('Ошибка','Выберите хотя бы один день недели');
+                            return;
+                          }
+
+                          // Создать привычку
+                          await FirebaseFirestore.instance
+                              .collection('habits')
+                              .add({
+                            'title': title,
+                            'icon': _icons.indexOf(icon),
+                            'color': _colors.indexOf(color),
+                            'repeat': _selectedDays,
+                            'streak': 0,
+                            'bestStreak': 0,
+                            'completedThisWeek': 0,
+                            'completionRate': 0,
+                            'datesCompleted': [],
+                          });
+
+                          Navigator.pop(context); // Закрыть модальное окно
+
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text('Выберите хотя бы один день недели'),
+                            content: Text('Привычка "$title" создана'),
                             duration: Duration(seconds: 2),
                           ));
-                          return;
-                        }
-
-                        // Создать привычку
-                        await FirebaseFirestore.instance
-                            .collection('habits')
-                            .add({
-                          'title': title,
-                          'icon': _icons.indexOf(icon),
-                          'color': _colors.indexOf(color),
-                          'repeat': _selectedDays,
-                          'streak': 0,
-                          'bestStreak': 0,
-                          'completedThisWeek': 0,
-                          'completionRate': 0,
-                          'datesCompleted': [],
-                        });
-
-                        Navigator.pop(context); // Закрыть модальное окно
-
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text('Привычка "$title" создана'),
-                          duration: Duration(seconds: 2),
-                        ));
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding:
+                          EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                         ),
-                        padding:
-                        EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                      ),
-                      child: Text(
-                        'Создать привычку',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                        child: Text(
+                          'Создать привычку',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -593,7 +600,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
             ),
           ],
         ),
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -604,7 +611,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 14,
+                fontSize: 12,
                 fontWeight: FontWeight.bold,
               ),
             ),
