@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'habit_detail.dart';
@@ -72,17 +76,60 @@ class _HabitHomeScreenState extends State<HabitHomeScreen> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: Text('Habit Tracker',
-            style: TextStyle(fontWeight: FontWeight.bold)),
-        centerTitle: true,
-        backgroundColor: primaryColor,
-        elevation: 5,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            FutureBuilder<double>(
+              future: _calculateCompletionRate(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Text(
+                    'Загрузка данных...',
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text(
+                    'Ошибка загрузки',
+                    style: TextStyle(fontSize: 14, color: Colors.red),
+                  );
+                } else {
+                  final completionRate = snapshot.data ?? 0.0;
+
+                  // Используем _selectedDay или текущий день, если _selectedDay не установлен
+                  final selectedDate = _selectedDay ?? _focusedDay;
+                  final selectedWeekDay = _weekDayToString(selectedDate.weekday);
+                  final selectedDateFormatted =
+                      '${selectedDate.day}.${selectedDate.month}.${selectedDate.year}';
+
+                  return TweenAnimationBuilder<double>(
+                    tween: Tween<double>(begin: 0.0, end: completionRate),
+                    duration: Duration(milliseconds: 800),
+                    builder: (context, value, child) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('$selectedWeekDay'),
+                          Text(
+                            '${value.toStringAsFixed(1)}% выполнено',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+          ],
         ),
+        backgroundColor: Colors.white,
         actions: [
           IconButton(
-            icon: Icon(Icons.delete_forever),
+            icon: Icon(Iconsax.close_square),
             tooltip: 'Очистить все привычки',
             onPressed: _clearAllHabits,
           ),
@@ -98,89 +145,81 @@ class _HabitHomeScreenState extends State<HabitHomeScreen> {
           ),
         ],
       ),
-      body: Column(
+        body: Column(
         children: [
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: LinearGradient(
-                  colors: [secondaryColor.withOpacity(0.8), primaryColor],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 8,
-                    offset: Offset(2, 4),
-                  ),
+          Container(
+            padding: EdgeInsets.all(15),
+            margin: EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              gradient: LinearGradient(
+                colors: [
+                  Color(0xFF5E5CE6), // Secondary color
+                  Color(0xFF000DFF), // Primary color
+                  Color(0xFF082FA1), // Дополнительный цвет
                 ],
+                stops: [0.0, 0.5, 1.0], // Уровни распределения цветов
+                begin: Alignment.topLeft, // Начало градиента
+                end: Alignment.bottomRight, // Конец градиента
               ),
-              child: TableCalendar(
-                firstDay: DateTime.utc(2020, 1, 1),
-                lastDay: DateTime.utc(2030, 12, 31),
-                focusedDay: _focusedDay,
-                selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                calendarFormat: CalendarFormat.week,
-                onDaySelected: (selectedDay, focusedDay) {
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 8,
+                  offset: Offset(2, 4),
+                ),
+              ],
+            ),
+            child: TableCalendar(
+              firstDay: DateTime.utc(2020, 1, 1),
+              lastDay: DateTime.utc(2030, 12, 31),
+              focusedDay: _focusedDay,
+              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+              calendarFormat: CalendarFormat.week,
+              onDaySelected: (selectedDay, focusedDay) {
+                if (!selectedDay
+                    .isBefore(DateTime.now().subtract(Duration(days: 1)))) {
                   setState(() {
                     _selectedDay = selectedDay;
                     _focusedDay = focusedDay;
                   });
-                },
-                headerStyle: HeaderStyle(
-                  formatButtonVisible: false,
-                  titleTextStyle: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+                } else {
+                  Get.snackbar('Ошибка', 'Вы не можете выбрать этот день');
+                }
+              },
+              headerStyle: HeaderStyle(
+                leftChevronVisible: false,
+                rightChevronVisible: false,
+                titleCentered: false,
+                formatButtonVisible: false,
+                formatButtonShowsNext: false,
+                titleTextStyle:
+                    TextStyle(color: Colors.transparent, fontSize: 1),
+              ),
+              daysOfWeekStyle: DaysOfWeekStyle(
+                weekdayStyle: TextStyle(
+                  color: Colors.white,
                 ),
-                calendarStyle: CalendarStyle(
-                  todayDecoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [secondaryColor, primaryColor],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    shape: BoxShape.circle,
-                  ),
-                  selectedDecoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  defaultTextStyle: TextStyle(color: Colors.black),
-                  weekendTextStyle: TextStyle(color: Colors.red),
+                weekendStyle: TextStyle(
+                  color: Colors.white,
                 ),
+              ),
+              calendarStyle: CalendarStyle(
+                todayDecoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.red.withOpacity(0.5),
+                ),
+                selectedDecoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.8),
+                  shape: BoxShape.circle,
+                ),
+                defaultTextStyle: TextStyle(color: Colors.white),
+                weekendTextStyle: TextStyle(color: Colors.white),
+                outsideTextStyle: TextStyle(color: Colors.white),
               ),
             ),
           ),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Привычки на $selectedWeekDay',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: primaryColor),
-                ),
-                IconButton(
-                  icon: Icon(Icons.refresh, color: primaryColor),
-                  tooltip: 'Обновить список',
-                  onPressed: () {
-                    setState(() {});
-                  },
-                ),
-              ],
-            ),
-          ),
+          SizedBox(height: 20),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
@@ -197,29 +236,23 @@ class _HabitHomeScreenState extends State<HabitHomeScreen> {
 
                 // Текущая дата
                 final DateTime today = DateTime.now();
-                final String todayString =
-                    '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
-                final String todayWeekDay = _weekDayToString(today.weekday);
+                final String todayWeekDay = _weekDayToString(
+                    today.weekday); // "Понедельник", "Вторник", и т.д.
 
-                // Фильтруем привычки
+                // Фильтруем задачи
                 final filteredHabits = habits.where((habit) {
                   final List<dynamic> repeatDays = habit['repeat'] ?? [];
-                  final List<dynamic> completedDates = habit['datesCompleted'] ?? [];
+                  final List<dynamic> completedDates =
+                      habit['datesCompleted'] ?? [];
 
-                  // Дни недели, когда задача должна повторяться
-                  final bool isRepeatToday = repeatDays.contains(todayWeekDay);
+                  // Проверяем, если текущий день или будущий день входит в repeat
+                  final bool isFutureOrTodayTask = repeatDays.any((day) {
+                    final DateTime nextOccurrence = _nextWeekDayOccurrence(day);
+                    return !nextOccurrence
+                        .isBefore(today); // Будущая дата или сегодня
+                  });
 
-                  // Задача не должна отображаться, если:
-                  // - она относится к прошедшим датам
-                  // - и не выполнена
-                  final bool isTaskPast =
-                      completedDates.every((date) {
-                        final DateTime completedDate = DateTime.parse(date);
-                        return completedDate.isBefore(today);
-                      }) &&
-                          !isRepeatToday;
-
-                  return isRepeatToday && !isTaskPast;
+                  return isFutureOrTodayTask;
                 }).toList();
 
                 if (filteredHabits.isEmpty) {
@@ -236,26 +269,36 @@ class _HabitHomeScreenState extends State<HabitHomeScreen> {
                   itemCount: filteredHabits.length,
                   itemBuilder: (context, index) {
                     final habit = filteredHabits[index];
-                    final List<dynamic> completedDates = habit['datesCompleted'] ?? [];
-                    final bool isCompletedToday = completedDates.contains(todayString);
+                    final List<dynamic> completedDates =
+                        habit['datesCompleted'] ?? [];
+                    final String todayString =
+                        '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+                    final bool isCompletedToday =
+                        completedDates.contains(todayString);
 
                     // Получаем цвет и значок привычки
                     final colorValue = habit['color'] ?? 0xFF000DFF;
                     final Color color = Color(colorValue);
                     final iconIndex = habit['icon'] ?? -1;
-                    final IconData icon = (iconIndex >= 0 && iconIndex < _icons.length)
-                        ? _icons[iconIndex]
-                        : Icons.help_outline;
+                    final IconData icon =
+                        (iconIndex >= 0 && iconIndex < _icons.length)
+                            ? _icons[iconIndex]
+                            : Icons.help_outline;
 
                     return AnimatedContainer(
                       duration: Duration(milliseconds: 500),
                       curve: Curves.easeInOut,
-                      margin: EdgeInsets.only(bottom: 16),
+                      margin: EdgeInsets.only(bottom: 10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
                         gradient: LinearGradient(
-                          colors: isCompletedToday
-                              ? [Colors.grey, Colors.grey]
+                          colors: completedDates.contains(todayString) &&
+                                  _isSameDate(DateTime.now(),
+                                      _selectedDay ?? DateTime.now())
+                              ? [
+                                  Colors.grey,
+                                  Colors.grey
+                                ] // Серый фон только для сегодняшних задач
                               : [color.withOpacity(1), color.withOpacity(0.1)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -263,7 +306,11 @@ class _HabitHomeScreenState extends State<HabitHomeScreen> {
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black12,
-                            blurRadius: isCompletedToday ? 10 : 6,
+                            blurRadius: completedDates.contains(todayString) &&
+                                    _isSameDate(DateTime.now(),
+                                        _selectedDay ?? DateTime.now())
+                                ? 10
+                                : 6,
                             offset: Offset(2, 4),
                           ),
                         ],
@@ -274,33 +321,51 @@ class _HabitHomeScreenState extends State<HabitHomeScreen> {
                         title: Text(
                           habit['title'],
                           style: TextStyle(
-                            color: isCompletedToday ? Colors.grey.shade300 : Colors.white,
+                            color: completedDates.contains(todayString) &&
+                                    _isSameDate(DateTime.now(),
+                                        _selectedDay ?? DateTime.now())
+                                ? Colors.grey.shade300
+                                : Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        trailing: IconButton(
-                          icon: Icon(
-                            isCompletedToday ? Iconsax.activity : Icons.check,
-                            color: isCompletedToday ? Colors.grey.shade300 : Colors.white,
-                          ),
-                          onPressed: () async {
-                            if (isCompletedToday) {
-                              // Удаляем сегодняшнюю дату из списка выполненных
-                              completedDates.remove(todayString);
-                            } else {
-                              // Добавляем сегодняшнюю дату в список выполненных
-                              completedDates.add(todayString);
-                            }
+                        trailing: _isSameDate(
+                                _selectedDay ?? DateTime.now(), DateTime.now())
+                            ? IconButton(
+                                icon: Icon(
+                                  completedDates.contains(todayString)
+                                      ? Iconsax.activity
+                                      : Icons.check,
+                                  color: completedDates.contains(todayString)
+                                      ? Colors.grey.shade300
+                                      : Colors.white,
+                                ),
+                                onPressed: () async {
+                                  final DateTime now = DateTime.now();
+                                  final String todayString =
+                                      '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
 
-                            // Обновляем данные в Firestore
-                            await FirebaseFirestore.instance
-                                .collection('users')
-                                .doc(userId)
-                                .collection('habits')
-                                .doc(habit.id)
-                                .update({'datesCompleted': completedDates});
-                          },
-                        ),
+                                  if (completedDates.contains(todayString)) {
+                                    // Удаляем сегодняшнюю дату из списка выполненных
+                                    completedDates.remove(todayString);
+                                  } else {
+                                    // Добавляем сегодняшнюю дату в список выполненных
+                                    completedDates.add(todayString);
+                                  }
+
+                                  // Обновляем данные в Firebase
+                                  await FirebaseFirestore.instance
+                                      .collection('users')
+                                      .doc(userId)
+                                      .collection('habits')
+                                      .doc(habit.id)
+                                      .update(
+                                          {'datesCompleted': completedDates});
+
+                                  setState(() {}); // Обновляем UI
+                                },
+                              )
+                            : null, // Убираем кнопку, если дата не текущая
                       ),
                     );
                   },
@@ -308,8 +373,6 @@ class _HabitHomeScreenState extends State<HabitHomeScreen> {
               },
             ),
           ),
-
-
         ],
       ),
     );
@@ -344,10 +407,44 @@ class _HabitHomeScreenState extends State<HabitHomeScreen> {
         await doc.reference.delete();
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Все привычки удалены.')),
-      );
+      Get.snackbar('Успешно', 'Все задачи удалены');
     }
+  }
+
+  Future<double> _calculateCompletionRate() async {
+    if (userId == null) return 0.0;
+
+    final today = DateTime.now();
+    final todayString =
+        '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+
+    final snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('habits')
+        .get();
+
+    final habits = snapshot.docs;
+    if (habits.isEmpty) return 0.0;
+
+    int completedTasks = 0;
+
+    for (var habit in habits) {
+      final List<dynamic> completedDates = habit['datesCompleted'] ?? [];
+      if (completedDates.contains(todayString)) {
+        completedTasks++;
+      }
+    }
+
+    // Вычисляем процент выполненных задач
+    return (completedTasks / habits.length) * 100;
+  }
+
+
+  bool _isSameDate(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
   }
 
   String _weekDayToString(int weekDay) {

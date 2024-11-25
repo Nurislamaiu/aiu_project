@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:crystal_navigation_bar/crystal_navigation_bar.dart';
+import 'features/personalization/screens/expense/screens/expense_home.dart';
 import 'features/personalization/screens/habit/screens/habit_home.dart';
 import 'features/personalization/screens/home/home_screen.dart';
 import 'features/personalization/screens/profile/profile.dart';
@@ -48,7 +49,7 @@ class NavigationController extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
 
   final screens = [
-    HomeScreen(),
+    ExpenseTrackerHome(),
     HomeViewTask(),
     HabitHomeScreen(),
     ScheduleScreen(),
