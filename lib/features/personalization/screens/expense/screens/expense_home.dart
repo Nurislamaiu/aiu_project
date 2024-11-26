@@ -123,16 +123,16 @@ class _ExpenseTrackerHomeState extends State<ExpenseTrackerHome> {
       setState(() {
         for (var doc in expenseSnapshot.docs) {
           expenseCategories[doc.id] = {
-            'icon': Icons.category,
-            'color': Colors.red,
+            'icon': IconData(int.parse(doc['icon']), fontFamily: 'MaterialIcons'),
+            'color': Color(doc['color']),
             'amount': doc['amount'] ?? 0.0,
           };
         }
 
         for (var doc in incomeSnapshot.docs) {
           incomeCategories[doc.id] = {
-            'icon': Icons.category,
-            'color': Colors.green,
+            'icon': IconData(int.parse(doc['icon']), fontFamily: 'MaterialIcons'),
+            'color': Color(doc['color']),
             'amount': doc['amount'] ?? 0.0,
           };
         }
@@ -147,124 +147,162 @@ class _ExpenseTrackerHomeState extends State<ExpenseTrackerHome> {
   }
 
   void _showAddAmountDialog(BuildContext context, String category) {
-    final TextEditingController _amountController = TextEditingController();
+    String enteredAmount = ""; // Текущая сумма
 
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true, // Учитывает появление клавиатуры
+      isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (ctx) {
-        return Wrap(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                left: 20,
-                right: 20,
-                top: 20,
-                bottom: MediaQuery.of(context)
-                    .viewInsets
-                    .bottom, // Учитываем клавиатуру
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               ),
+              height: MediaQuery.of(context).size.height * 0.7, // Устанавливаем высоту
               child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Заголовок
-                  Center(
+                  Text(
+                    'Введите сумму',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+
+                  // Поле для отображения текущей суммы
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     child: Text(
-                      'Добавить сумму',
+                      enteredAmount.isEmpty ? "0.00" : enteredAmount,
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 36,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                        color: Colors.black,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                   SizedBox(height: 20),
 
-                  // Поле ввода суммы
-                  TextField(
-                    controller: _amountController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: 'Введите сумму',
-                      labelStyle: TextStyle(color: Colors.grey),
-                      prefixIcon: Icon(Icons.attach_money, color: Colors.blue),
-                      filled: true,
-                      fillColor: Colors.grey[100],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
+                  // Цифровая клавиатура
+                  Expanded(
+                    child: GridView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3, // 3 кнопки в ряду
+                        childAspectRatio: 2, // Уменьшаем аспектное соотношение
+                        crossAxisSpacing: 8, // Уменьшаем отступы между элементами
+                        mainAxisSpacing: 8, // Уменьшаем вертикальные отступы
                       ),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                      itemCount: 12, // 10 цифр + кнопки "C" и "OK"
+                      itemBuilder: (context, index) {
+                        String buttonText;
+                        if (index < 9) {
+                          buttonText = (index + 1).toString();
+                        } else if (index == 9) {
+                          buttonText = "C";
+                        } else if (index == 10) {
+                          buttonText = "0";
+                        } else {
+                          buttonText = "OK";
+                        }
+
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              if (buttonText == "C") {
+                                enteredAmount = ""; // Очистка суммы
+                              } else if (buttonText == "OK") {
+                                if (enteredAmount.isNotEmpty) {
+                                  _addAmount(category, double.parse(enteredAmount));
+                                  Navigator.of(context).pop(); // Закрыть диалог
+                                }
+                              } else {
+                                if (enteredAmount.length < 10) {
+                                  enteredAmount += buttonText; // Добавление цифры
+                                }
+                              }
+                            });
+                          },
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 200),
+                            decoration: BoxDecoration(
+                              gradient: buttonText == "OK"
+                                  ? LinearGradient(
+                                colors: [Colors.blueAccent, Colors.lightBlue],
+                              )
+                                  : buttonText == "C"
+                                  ? LinearGradient(
+                                colors: [Colors.redAccent, Colors.orange],
+                              )
+                                  : LinearGradient(
+                                colors: [Colors.grey.shade300, Colors.grey.shade400],
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 5,
+                                  offset: Offset(2, 4),
+                                ),
+                              ],
+                            ),
+                            child: Center(
+                              child: Text(
+                                buttonText,
+                                style: TextStyle(
+                                  fontSize: 18, // Уменьшаем размер текста
+                                  fontWeight: FontWeight.bold,
+                                  color: buttonText == "OK" || buttonText == "C"
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
-                  SizedBox(height: 20),
 
-                  // Кнопки
-                  Row(
-                    children: [
-                      // Кнопка Отмена
-                      Expanded(
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.of(ctx).pop();
-                          },
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.redAccent,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                          ),
-                          child: Text(
-                            'Отмена',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w600),
-                          ),
-                        ),
+                  // Кнопка отмены
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text(
+                      'Отмена',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.red,
                       ),
-                      SizedBox(width: 10),
-
-                      // Кнопка Добавить
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            final amount =
-                                double.tryParse(_amountController.text) ?? 0.0;
-                            if (amount > 0) {
-                              _addAmount(category, amount);
-                              Navigator.of(ctx).pop();
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            backgroundColor: Colors.blue,
-                          ),
-                          child: Text(
-                            'Добавить',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                  SizedBox(height: 20),
                 ],
               ),
-            ),
-          ],
+            );
+          },
         );
       },
     );
   }
+
+
+
+
 
   void _addAmount(String category, double amount) {
     final userId = _currentUser!.uid;
@@ -286,8 +324,11 @@ class _ExpenseTrackerHomeState extends State<ExpenseTrackerHome> {
 
     // Обновляем данные в Firestore
     collection.doc(category).set({
-      'amount': FieldValue.increment(amount), // Увеличиваем сумму
+      'amount': FieldValue.increment(amount),
+      'icon': categories[category]!['icon'].toString(), // Сохраняем иконку как строку
+      'color': categories[category]!['color'].value,   // Сохраняем цвет как int
     }, SetOptions(merge: true));
+
 
     // Обновляем локальное состояние для UI
     setState(() {
