@@ -13,6 +13,7 @@ void main() async {
   // Hive initialization
   await Hive.initFlutter();
   await Hive.openBox('profile');
+  await Hive.openBox('expenseTracker');
 
   // Register Hive Adapters
   Hive.registerAdapter<TaskModel>(TaskModelAdapter());
